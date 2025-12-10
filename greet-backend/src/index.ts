@@ -11,7 +11,7 @@ app.use(express.json());
 // Rutas
 app.post('/greet', (req, res) => {
   const { name } = req.body;
-  res.json({ message: `Hola, ${name}!` });
+  res.json({ message: `Hello, ${name}!` });
 });
 
 // Iniciar servidor
