@@ -1,7 +1,9 @@
 # --- Stage 1: Build ---
-FROM ubuntu:20.04
+FROM ubuntu:20.04 AS builder
 
 WORKDIR /app
+
+COPY package*.json ./
 
 RUN apt-get update && apt-get install -y nodejs npm
 RUN npm install && npm run build 
