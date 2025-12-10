@@ -1,27 +1,21 @@
 # --- Stage 1: Build ---
-FROM ubuntu:20.04
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y nodejs npm
-RUN npm install && npm run build 
+COPY package*.json ./
+
+RUN npm install
 
 COPY . .
 
 RUN npm run build
 
 # --- Stage 2: Runtime ---
-FROM ubuntu:20.04
+FROM nginx:alpine
 
-WORKDIR /app
+COPY --from=builder /app/build /usr/share/nginx/html
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
+EXPOSE 80
 
-RUN apt-get update && apt-get install -y nodejs npm
-
-RUN npm install --production
-
-EXPOSE 3000
-
-CMD ["node", "dist/index.js"]
+CMD ["nginx", "-g", "daemon off;"]
