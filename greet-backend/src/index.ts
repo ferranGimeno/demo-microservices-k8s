@@ -18,3 +18,5 @@ app.post('/greet', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+export const greet = (name: string) => `Hello, ${name}!`;

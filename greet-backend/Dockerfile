@@ -1,29 +1,28 @@
 # --- Stage 1: Build ---
-FROM ubuntu:20.04 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN apt-get update && apt-get install -y nodejs npm
-RUN npm install && npm run build 
+RUN apk update
+RUN npm install
 
 COPY . .
 
 RUN npm run build
 
 # --- Stage 2: Runtime ---
-FROM ubuntu:20.04
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
 
-RUN apt-get update && apt-get install -y nodejs npm
-
-RUN npm install --production
+RUN apk update
 
 EXPOSE 3001
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/src/index.js"]
